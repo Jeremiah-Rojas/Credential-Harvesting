@@ -35,6 +35,7 @@ DeviceProcessEvents
 ```
 The following events results were displayed:
 <img width="1668" height="285" alt="image" src="https://github.com/user-attachments/assets/8f69b741-94fb-4933-9d16-9ccc8a9a5ab6" />
+<img width="1660" height="378" alt="image" src="https://github.com/user-attachments/assets/ecdaac03-1a64-403f-8ecf-73feda3055e5" />
 Due to the number of failed logon attempts (7) in a period of three seconds, I concluded that this was a brute force attempt.
 
 2. Next, I wanted to verify if the malicious user was able to successfully logon so I slightly changed the query to search for logon successes:
@@ -46,40 +47,6 @@ DeviceFileEvents
 The following results were displayed:
 <img width="1668" height="242" alt="image" src="https://github.com/user-attachments/assets/2078e60b-ff88-41db-8b73-a634e317489b" />
 From this I was able to see that the connection was done remotely and from a computer named "desktop-ni4tdje" which is my host computer. This concludes that the user was able to gain access to the admin account. _Note: Although there are more logon successes, these are from me logging in minutes before starting the lab._
-
-4. Now that the user successfully logged in, I wanted to see what they did. From what the administrator told me, the user downloaded a file named "image.jpg" so I looked for this file and how it got there using the following query:
-```kql
-DeviceFileEvents
-| where DeviceName == "rojas-admin"
-| where ActionType == "FileCreated"
-| where FileName contains "image"
-```
-The following results were displayed:
-<img width="1405" height="256" alt="image" src="https://github.com/user-attachments/assets/c8ec9aed-8c05-4fc1-b995-6bb21cca29f6" />
-The ".Ink" extension indicates powershell activity so I looked for that next.
-
-5. Although the administor claimed he saw no scripts on the system, I decided to check you powershell events using the following query:
-```kql
-DeviceProcessEvents
-| where DeviceName == "rojas-admin"
-| where ActionType == "ProcessCreated"
-| where InitiatingProcessCommandLine contains "powershell"
-```
-The following events were displayed:
-<img width="1408" height="289" alt="image" src="https://github.com/user-attachments/assets/9b293d53-4534-43f7-8b27-aad2cc3c4ec7" />
-Since I was looking specifically for powershell events, I click on the powershell event:
-</br><img width="314" height="500" alt="image" src="https://github.com/user-attachments/assets/61b41644-a787-45ef-856c-6eb1c308f41c" />
-</br>This event tells me that the user used Powershell ISE to run the this command: 
-</br>```"powershell.exe" -EncodedCommand VwByAGkAdABlAC0ATwB1AHQAcAB1AHQAIABoAGUAbABsAG8AIAB3AG8AcgBsAGQ=```
-</br>Based on the last character of the string "=", this is a base64 encoded message that is displayed to the screen when the command runs. The following command prints to the screen "hello world." However, I still had not found an evidence of a script, so I ran the following query:
-```kql
-DeviceFileEvents
-| where DeviceName == "rojas-admin"
-| where FileName endswith ".ps1"
-```
-I found the script in the results named "IT-testing" and clicked on it:
-</br><img width="1391" height="229" alt="image" src="https://github.com/user-attachments/assets/00978991-034e-4183-991e-2c5ccc0c93be" />
-</br>Collectively from the data, I concluded that the image was downloaded from the powershell script and the command to print "hello world" was printed to the screen. To prevent this infected system from damaging other systems on the network, I isolated the administrator's computer, "rojas-admin". (For some odd reasons, I could not verify that the script was deleted because the logs weren't showing up.)
 
 ---
 
