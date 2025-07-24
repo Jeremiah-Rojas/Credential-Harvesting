@@ -2,7 +2,7 @@
 **Suspicious activity was detected from a user account**
 
 ## Example Scenario:
-A standard user, who was recently hired, works from home and was flagged by administrators for potentially malicious activity. This user accesses the necessary company resources through RDP but unusual interactions with the processes ```rundll32.exe``` and ```comsvcs.dll``` was detected and need to be analyzed. The goal is to investigate malicious use of built-in Windows utilities (```rundll32.exe```, and ```comsvcs.dll```) to dump process memory.
+A standard user, who was recently hired, works from home and was flagged by administrators for potentially malicious activity. This user accesses the necessary company resources through RDP but unusual interactions with the processes ```rundll32.exe``` and ```comsvcs.dll``` was detected and need to be analyzed along with the creation of the ```svchost-exe.dmp``` file. The goal is to investigate malicious use of built-in Windows utilities (```rundll32.exe```, and ```comsvcs.dll```) to dump process memory.
 </br>_Note: ```rundll32.exe```_
 
 ---
