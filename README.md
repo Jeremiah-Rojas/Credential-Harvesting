@@ -27,7 +27,7 @@ Note: This powershell command checks for an active RDP session, dumps the memory
 
 ## Steps Taken
 
-1. First look for logon failures using the following query (I narrowed down the results by entering in the DeviceName):
+1. I looked for the process ```comsvcs.dll``` and the file ```rundll32.exe``` on the user's system using the following query:
 ```kql
 DeviceProcessEvents
 | where DeviceName == "rojas-admin"
@@ -37,9 +37,9 @@ DeviceProcessEvents
 The following events results were displayed:
 <img width="1668" height="285" alt="image" src="https://github.com/user-attachments/assets/8f69b741-94fb-4933-9d16-9ccc8a9a5ab6" />
 <img width="1660" height="378" alt="image" src="https://github.com/user-attachments/assets/ecdaac03-1a64-403f-8ecf-73feda3055e5" />
-Due to the number of failed logon attempts (7) in a period of three seconds, I concluded that this was a brute force attempt.
+In itself, these attributes are not a reason for concern, but it was necessary to search the system for the svchost file which would indicate suspicious activity.
 
-2. Next, I wanted to verify if the malicious user was able to successfully logon so I slightly changed the query to search for logon successes:
+2. I searched for the ```svchost-exe.dmp``` file using the query:
 ```kql
 DeviceFileEvents
 | where DeviceName == "rojas-admin"
