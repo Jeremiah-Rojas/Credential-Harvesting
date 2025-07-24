@@ -10,6 +10,8 @@ A standard user, who was recently hired, works from home and was flagged by admi
 ## IoC Discovery Plan:
 1. Check DeviceProcessEvents for the Windows utilities ```rundll32.exe``` and ```comsvcs.dll```
 2. Check DeviceFileEvents for the ```svchost-exe.dmp``` dump file
+3. Isolate system
+4. Remove all malicious files/processes
 
 ---
 ## Steps Taken by Bad Actor
@@ -46,6 +48,11 @@ DeviceFileEvents
 The following results were displayed:
 <img width="1668" height="242" alt="image" src="https://github.com/user-attachments/assets/2078e60b-ff88-41db-8b73-a634e317489b" />
 From this I was able to see that the connection was done remotely and from a computer named "desktop-ni4tdje" which is my host computer. This concludes that the user was able to gain access to the admin account. _Note: Although there are more logon successes, these are from me logging in minutes before starting the lab._
+
+3. After the suspicious activity was verified, the user's computer was isolated.
+<img width="1432" height="764" alt="image" src="https://github.com/user-attachments/assets/d5146c24-2c0e-4fed-aa99-f1957befa36b" />
+
+4. Then, navigating through the system, remove the svchost-exe.dmp file from the system ensuring the system is back to its secure state.
 
 ---
 
