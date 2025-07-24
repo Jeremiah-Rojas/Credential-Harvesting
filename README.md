@@ -2,7 +2,8 @@
 **Suspicious activity was detected from a user account**
 
 ## Example Scenario:
-One of the administrators from the IT team calls you, the cybersecurity analyst, and tells you he is seeing some file that he has never seen before and one that he did not download; most likely due to a script. After looking into the situation more, you realize that the administrator’s account had been logged into after work hours. The goal is to analyze the events leading up to the account breach and to figure out how the file appeared on the desktop.
+A standard user, who was recently hired, works from home and was flagged by administrators for potentially malicious activity. This user accesses the necessary company resources through RDP but unusual interactions with the processes ```rundll32.exe``` and ```comsvcs.dll``` was detected and need to be analyzed. The goal is to investigate malicious use of built-in Windows utilities (```rundll32.exe```, and ```comsvcs.dll```) to dump process memory.
+</br>_Note: ```rundll32.exe```_
 
 ---
 
